@@ -12,21 +12,21 @@ FPFIXER = 1e-11
 ENABLEREFLECT = False
 
 
-class pos:
+class Position:
     def __init__(self, x, y, z):
         self.arr = np.array([x, y, z], dtype=float)
 
     def __add__(self, other):
         arr = self.arr + other.arr
-        return pos(arr[0], arr[1], arr[2])
+        return Position(arr[0], arr[1], arr[2])
 
     def __sub__(self, other):
         arr = self.arr - other.arr
-        return pos(arr[0], arr[1], arr[2])
+        return Position(arr[0], arr[1], arr[2])
 
     def __mul__(self, other):
         arr = np.multiply(self.arr, other)
-        return pos(arr[0], arr[1], arr[2])
+        return Position(arr[0], arr[1], arr[2])
 
     def dot(self, other):
         return np.dot(self.arr, other.arr)
@@ -41,7 +41,7 @@ class pos:
         L = self.arr
         N = axis.arr
         arr = (2 * self.dot(axis)) * N - L
-        return pos(arr[0], arr[1], arr[2])
+        return Position(arr[0], arr[1], arr[2])
 
 
 class color:
@@ -74,7 +74,7 @@ class color:
 
 class instance:
     def __init__(self, x, y, z):
-        self.pos = pos(x, y, z)
+        self.position = Position(x, y, z)
 
 
 class light(instance):
@@ -100,11 +100,11 @@ class sphere(instance):
         self.reflect = reflect
 
     def normal(self, pos):
-        return pos - self.pos
+        return pos - self.position
 
     def intersect(self, o, d):  # find t for o + td
         a = d.dot(d)
-        tmp = o - self.pos
+        tmp = o - self.position
         b = (tmp * 2).dot(d)
         c = tmp.dot(tmp) - self.radius ** 2
 
@@ -128,8 +128,8 @@ Ia = color(20, 20, 20)
 def finddir(w, h, e):
     m_x = int(WIDTH / 2)
     m_y = int(HEIGHT / 2)
-    p = pos((w - m_x) * PICLEN, SCREENDIS, (m_y - h) * PICLEN)
-    p = p - e.pos
+    p = Position((w - m_x) * PICLEN, SCREENDIS, (m_y - h) * PICLEN)
+    p = p - e.position
     return (p)
 
 
@@ -164,9 +164,9 @@ def raycast(source, dir, spheres, lights, n=0):
         return BLACK
 
     for s in spheres:
-        pos = s.intersect(source, dir)
-        if pos is not None and pos < min:
-            min = pos
+        position = s.intersect(source, dir)
+        if position is not None and position < min:
+            min = position
             sph = s
 
     if sph is not None:
@@ -174,7 +174,7 @@ def raycast(source, dir, spheres, lights, n=0):
         norm = sph.normal(intersection)
         Illu = BLACK
         for li in lights:
-            ldir = li.pos - intersection
+            ldir = li.position - intersection
 
             if hits(intersection, ldir, spheres):
                 Ie = BLACK
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     for h in range(HEIGHT):
         for w in range(WIDTH):
             direction = finddir(w, h, eye)
-            c = raycast(eye.pos, direction, spheres, lights)
+            c = raycast(eye.position, direction, spheres, lights)
             drawpix(pixels, w, h, c)
     img.show()
     if SAVE:
