@@ -44,7 +44,7 @@ class Position:
         return Position(arr[0], arr[1], arr[2])
 
 
-class color:
+class Color:
     def __init__(self, r, g, b):
         self.arr = np.array([r, g, b], dtype=int)
 
@@ -53,20 +53,20 @@ class color:
         for i in range(3):
             if arr[i] > 255:
                 arr[i] = 255
-        return color(arr[0], arr[1], arr[2])
+        return Color(arr[0], arr[1], arr[2])
 
     def dimm(self, other):
         arr = np.array([0, 0, 0], dtype=int)
         for i in range(3):
             arr[i] = int(self.arr[i] * other.arr[i] / 255)
-        return color(arr[0], arr[1], arr[2])
+        return Color(arr[0], arr[1], arr[2])
 
     def __mul__(self, other):
         arr = np.multiply(self.arr, other)
         for i in range(3):
             if arr[i] < 0:
                 arr[i] = 0
-        return color(arr[0], arr[1], arr[2])
+        return Color(arr[0], arr[1], arr[2])
 
     def __eq__(self, other):
         return self.arr.all() == other.arr.all()
@@ -80,7 +80,7 @@ class instance:
 class light(instance):
     def __init__(self, x, y, z, r, g, b):
         super().__init__(x, y, z)
-        self.color = color(r, g, b)
+        self.color = Color(r, g, b)
 
 
 class sphere(instance):
@@ -91,12 +91,12 @@ class sphere(instance):
                  kdr=150, kdg=150, kdb=150,
                  ksr=30, ksg=30, ksb=30, reflect=0):
         super().__init__(x, y, z)
-        self.color = color(r, g, b)
+        self.color = Color(r, g, b)
         self.radius = rad
         self.shine = shine
-        self.ka = color(kar, kag, kab)
-        self.kd = color(kdr, kdg, kdb)
-        self.ks = color(ksr, ksg, ksb)
+        self.ka = Color(kar, kag, kab)
+        self.kd = Color(kdr, kdg, kdb)
+        self.ks = Color(ksr, ksg, ksb)
         self.reflect = reflect
 
     def normal(self, pos):
@@ -121,8 +121,8 @@ class sphere(instance):
         return min(t1, t2)
 
 
-BLACK = color(0, 0, 0)
-Ia = color(20, 20, 20)
+BLACK = Color(0, 0, 0)
+Ia = Color(20, 20, 20)
 
 
 def finddir(w, h, e):
